@@ -39,7 +39,6 @@ export default function Upload({
   })
 
   const previewFile = (file) => {
-    // console.log(file)
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onloadend = () => {
@@ -53,20 +52,35 @@ export default function Upload({
   }, [register])
 
   useEffect(() => {
-    setValue(name, selectedFile)
+    setValue(name, selectedFile, { shouldValidate: true, shouldDirty: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile, setValue])
+
+  // Forward clicks on container to hidden input to ensure file dialog opens
+  const onContainerClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click()
+    }
+  }
 
   return (
     <div className="flex flex-col space-y-2">
       <label className="text-sm text-richblack-5" htmlFor={name}>
         {label} {!viewData && <sup className="text-pink-200">*</sup>}
       </label>
+
+      {/* The root div has getRootProps and also onClick forwarding */}
       <div
+        {...getRootProps()}
+        onClick={onContainerClick}
         className={`${
           isDragActive ? "bg-richblack-600" : "bg-richblack-700"
         } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
       >
+        {/* Hidden file input */}
+        <input {...getInputProps()} ref={inputRef} />
+
+        {/* Show preview if available */}
         {previewSource ? (
           <div className="flex w-full flex-col p-6">
             {!video ? (
@@ -74,17 +88,26 @@ export default function Upload({
                 src={previewSource}
                 alt="Preview"
                 className="h-full w-full rounded-md object-cover"
+                onClick={(e) => e.stopPropagation()} // prevent triggering input click on preview click
               />
             ) : (
-              <Player aspectRatio="16:9" playsInline src={previewSource} />
+              <Player
+                aspectRatio="16:9"
+                playsInline
+                src={previewSource}
+                onClick={(e) => e.stopPropagation()}
+              />
             )}
+
             {!viewData && (
               <button
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation() // prevent triggering input click when clicking cancel
                   setPreviewSource("")
                   setSelectedFile(null)
-                  setValue(name, null)
+                  setValue(name, null, { shouldValidate: true, shouldDirty: true })
+                  if (inputRef.current) inputRef.current.value = null // reset input value
                 }}
                 className="mt-3 text-richblack-400 underline"
               >
@@ -93,26 +116,23 @@ export default function Upload({
             )}
           </div>
         ) : (
-          <div
-            className="flex w-full flex-col items-center p-6"
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} ref={inputRef} />
+          // No preview, show upload icon + instructions
+          <div className="flex w-full flex-col items-center p-6 select-none">
             <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
               <FiUploadCloud className="text-2xl text-yellow-50" />
             </div>
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
               Drag and drop an {!video ? "image" : "video"}, or click to{" "}
-              <span className="font-semibold text-yellow-50">Browse</span> a
-              file
+              <span className="font-semibold text-yellow-50">Browse</span> a file
             </p>
-            <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs text-richblack-200">
+            <ul className="mt-10 flex list-disc justify-between space-x-12 text-center text-xs text-richblack-200">
               <li>Aspect ratio 16:9</li>
               <li>Recommended size 1024x576</li>
             </ul>
           </div>
         )}
       </div>
+
       {errors[name] && (
         <span className="ml-2 text-xs tracking-wide text-pink-200">
           {label} is required

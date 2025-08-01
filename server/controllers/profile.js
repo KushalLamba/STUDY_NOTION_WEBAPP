@@ -16,46 +16,50 @@ exports.updateProfile = async (req, res) => {
       about = "",
       contactNumber = "",
       gender = "",
-    } = req.body
-    const id = req.user.id
+    } = req.body;
+    const id = req.user.id;
 
-    // Find the profile by id
-    const userDetails = await User.findById(id)
-    const profile = await Profile.findById(userDetails.additionalDetails)
+    // Find user and check
+    const userDetails = await User.findById(id);
+    if (!userDetails) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-    const user = await User.findByIdAndUpdate(id, {
-      firstName,
-      lastName,
-    })
-    await user.save()
+    // Update basic user info
+    await User.findByIdAndUpdate(id, { firstName, lastName });
 
-    // Update the profile fields
-    profile.dateOfBirth = dateOfBirth
-    profile.about = about
-    profile.contactNumber = contactNumber
-    profile.gender = gender
+    // Get and check profile
+    const profile = await Profile.findById(userDetails.additionalDetails);
+    if (!profile) {
+      return res.status(404).json({ success: false, message: "Profile not found" });
+    }
 
-    // Save the updated profile
-    await profile.save()
+    // Update profile fields
+    profile.dateOfBirth = dateOfBirth;
+    profile.about = about;
+    profile.contactNumber = contactNumber;
+    profile.gender = gender;
+    await profile.save();
 
-    // Find the updated user details
+    // Send fresh completed data
     const updatedUserDetails = await User.findById(id)
       .populate("additionalDetails")
-      .exec()
+      .exec();
 
     return res.json({
       success: true,
       message: "Profile updated successfully",
       updatedUserDetails,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.error("UPDATE_PROFILE API ERROR:", error);
     return res.status(500).json({
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
+
 
 exports.deleteAccount = async (req, res) => {
   try {

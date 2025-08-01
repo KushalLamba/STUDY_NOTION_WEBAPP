@@ -41,8 +41,11 @@ function App() {
   const { user } = useSelector((state) => state.profile)
 
   useEffect(() => {
+    // Since you're using redux-persist now, you should get the token from Redux state instead
+    // But if you need to check localStorage, just get the string directly:
     if (localStorage.getItem("token")) {
-      const token = JSON.parse(localStorage.getItem("token"))
+      const token = localStorage.getItem("token") // ✅ FIXED: Just get the string directly
+      // console.log('token in starting',token);
       dispatch(getUserDetails(token, navigate))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

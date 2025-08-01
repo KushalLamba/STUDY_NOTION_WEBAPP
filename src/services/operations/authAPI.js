@@ -105,7 +105,7 @@ export function login(email, password, navigate) {
         ? response.data.user.image
         : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
       dispatch(setUser({ ...response.data.user, image: userImage }))
-      localStorage.setItem("token", JSON.stringify(response.data.token))
+      // Removed: localStorage.setItem("token", JSON.stringify(response.data.token))
       navigate("/dashboard/my-profile")
     } catch (error) {
       console.log("LOGIN API ERROR............", error)
@@ -175,8 +175,8 @@ export function logout(navigate) {
     dispatch(setToken(null))
     dispatch(setUser(null))
     dispatch(resetCart())
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
+    // Removed: localStorage.removeItem("token")
+    // Removed: localStorage.removeItem("user")
     toast.success("Logged Out")
     navigate("/")
   }
