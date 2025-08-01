@@ -44,7 +44,9 @@ exports.showAllCategories = async (req, res) => {
 }
 
 exports.categoryPageDetails = async (req, res) => {
+  console.log("categoryPageDetails route hit with body:", req.body);
   try {
+    
     const { categoryId } = req.body;
     if (!categoryId) {
       return res.status(400).json({ success: false, message: "categoryId is required" });
