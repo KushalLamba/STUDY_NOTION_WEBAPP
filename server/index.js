@@ -66,8 +66,9 @@ app.get("/", (req, res) => {
 });
 
 // Listening to the server
+
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
 
 
