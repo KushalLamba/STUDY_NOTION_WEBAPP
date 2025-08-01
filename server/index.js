@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 4000;
 dotenv.config();
 
 // Connecting to database
-database.connect();
+await database.connect();
  
 // Middlewares
 app.use(express.json());
@@ -48,7 +48,7 @@ app.use(
 );
 
 // Connecting to cloudinary
-cloudinaryConnect();
+await cloudinaryConnect();
 
 // Setting up routes
 app.use("/api/v1/auth", userRoutes);
