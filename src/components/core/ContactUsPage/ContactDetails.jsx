@@ -21,7 +21,7 @@ const contactDetails = [
     icon: "IoCall",
     heading: "Call us",
     description: "Mon - Fri From 8am to 5pm",
-    details: "+91 7206966260",
+    details: "+91     git pull origin main7206966260",
   },
 ]
 
