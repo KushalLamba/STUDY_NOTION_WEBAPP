@@ -13,15 +13,15 @@ const contactDetails = [
   {
     icon: "BiWorld",
     heading: "Visit us",
-    description: "Come and say hello at our office HQ.",
+    description: "Gurugram India.",
     details:
-      "Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016",
+      "Gurugram",
   },
   {
     icon: "IoCall",
     heading: "Call us",
     description: "Mon - Fri From 8am to 5pm",
-    details: "+123 456 7869",
+    details: "+91 7206966260",
   },
 ]
 
