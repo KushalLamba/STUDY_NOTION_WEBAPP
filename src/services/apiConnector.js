@@ -12,4 +12,4 @@ export const apiConnector = (method, url, bodyData, headers, params) => {
   });
 };
 
-console.log("BASE_URL is:", BASE_URL);
+
